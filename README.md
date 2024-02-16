@@ -1,4 +1,18 @@
-# EXPENSE TRACKER
+# Expense Tracker
+
+## Table Of Content
+
+* [Description](#description)
+* [Technologies](#technologies)
+* [Database Schema Documentation](#database-schema-documentation)
+* [API Documentation](#api-documentation)
+  * [Getting Started](#getting-started)
+  * [Authentication](#authentication)
+  * [Transactions Management](#authentication)
+  * [Analytics Management](#authentication)
+  * [Category Management](#authentication)
+* [Installation](#installation)
+* [Running the app](#running-the-app)
 
 ## Description
 
@@ -68,19 +82,267 @@ The main functions are:
 
 ### 3. Categories Table
 
-**Description:** Contains predefined categories that can be used to classify transactions.
+**Description:** Contains predefined categories that can be used to classify transactions as well as custom categories created by users.
 
-  | Field       | Type         | Description                                       |
-  |-------------|--------------|---------------------------------------------------|
-  | id          | UUID         | Primary key, unique identifier for each category. |
-  | name        | VARCHAR(50)  | The name of the category.                         |
-  | description | TEXT         | A brief description of the category (optional).   |
+  | Field       | Type         | Description                                                                                      |
+  |-------------|--------------|--------------------------------------------------------------------------------------------------|
+  | id          | UUID         | Primary key, unique identifier for each category.                                                |
+  | name        | VARCHAR(50)  | The name of the category.                                                                        |
+  | description | TEXT         | A brief description of the category (optional).                                                  |
+  | user_id     | UUID         | Foreign key linking to the Users table (optional). Identifies the user who created the category. |
 
 #### Relationships
 
-**Transactions to Categories:** Many-to-One (Optional). If implemented, each transaction can be assigned to one category, making it easier to classify and analyze expenses. This would require adding a `category_id` field to the Transactions table to establish a foreign key relationship with the Categories table.
+**Transactions to Categories:** Many-to-One. Each transaction can be assigned to one category, making it easier to classify and analyze expenses. This would require adding a `category_id` field to the Transactions table to establish a foreign key relationship with the Categories table.
 
 **Users to Transactions:** One-to-Many. A single user can have multiple transactions, but each transaction is associated with one user. This relationship is established through the `user_id` field in the Transactions table, which acts as a foreign key to the Users table.
+
+## API Documentation
+
+### Getting Started
+
+**Endpoint:** `/graphql`
+
+**Method:** POST
+
+**Headers:**
+
+* `Content-Type: application/json`
+* `Authorization: Bearer <token>` (for protected routes)
+
+### Authentication
+
+#### Register a new user
+
+Allows a new user to register an account by providing their email, password and name. Upon successful registration, returns the user's ID, email and name.
+
+```graphql
+mutation RegisterUser {
+  register(userInput: { email: "user@example.com", password: "password123", name: "John Doe" }) {
+    id
+    email
+    name
+  }
+}
+```
+
+#### Authenticate and receive a token
+
+Authenticates a user with their email and password. Upon successful authentication, returns an access token that can be used for authenticated requests to the API.
+
+```graphql
+mutation AuthenticateUser {
+  login(email: "user@example.com", password: "password123") {
+    accessToken
+  }
+}
+```
+
+### Transactions Management
+
+#### Add a new transaction
+
+Allows a user to add a new transaction. The user must provide the `amount`, `type` (as an ENUM of either 'income' or 'expense'), `category_id` (referencing an existing category by UUID), `description`, and the `date` of the transaction.
+
+Protected route.
+
+```graphql
+mutation AddTransaction {
+  createTransaction(transactionInput: {
+    amount: 50.00,
+    type: "income",
+    category_id: "uuid-of-the-category",
+    description: "Freelance payment",
+    date: "2024-02-16T12:00:00Z"
+  }) {
+    id
+    amount
+    type
+    category_id
+    description
+    date
+  }
+}
+```
+
+#### Get user transactions
+
+Retrieves a list of transactions for a user. The query can be filtered by various criteria (next query). By default, it returns all transactions associated with the user's account.
+
+Protected route.
+
+```graphql
+query GetUserTransactions {
+  transactions() {
+    id
+    amount
+    type
+    category {
+      id
+      name
+    }
+    description
+    date
+  }
+}
+```
+
+#### Get user transactions with filters
+
+Users can filter the transactions by `date range`, `category`, or `type`. This query returns all transactions associated with the user's account that match the given filters.
+
+Protected route.
+
+```graphql
+query GetUserTransactions {
+  transactions(
+    filter: {
+      date_gte: "2024-01-01",
+      date_lte: "2024-01-31",
+      category_id: "uuid-of-the-category",
+      type: "expense"
+    }
+  ) {
+    id
+    amount
+    type
+    category {
+      id
+      name
+    }
+    description
+    date
+  }
+}
+```
+
+#### Update an existing transaction
+
+Allows a user to update the details of an existing transaction. The user can modify fields such as `amount`, `type`, `category_id`, `description`, and `date`. The `id` of the transaction must be provided to specify which transaction is to be updated.
+
+Protected route.
+
+```graphql
+mutation UpdateTransaction {
+  updateTransaction(
+    id: "uuid-of-the-transaction",
+    transactionInput: {
+      amount: 15.99,
+      type: "expense",
+      category_id: "uuid-of-the-category",
+      description: "Updated lunch",
+      date: "2024-02-16T12:00:00Z"
+    }
+  ) {
+    id
+    amount
+    type
+    category_id
+    description
+    date
+  }
+}
+```
+
+### Analytics Management
+
+#### Get user financial analytics for a specific period
+
+Retrieves financial analytics for a user over a specified date range. This could include total income, total expenses, and a breakdown by categories.
+
+Protected route.
+
+```graphql
+query GetUserFinancialAnalytics {
+  financialAnalytics(
+    startDate: "2024-01-01",
+    endDate: "2024-01-31"
+  ) {
+    totalIncome
+    totalExpenses
+    byCategory {
+      categoryId
+      categoryName
+      totalAmount
+    }
+  }
+}
+```
+
+### Category Management
+
+#### Add a new category
+
+Allows a user to create a new custom category. The user must provide the name of the category, and optionally a description.
+
+Protected route.
+
+```graphql
+mutation AddCategory {
+  addCategory(categoryInput: {
+    name: "New Category",
+    description: "Description of the new category"
+  }) {
+    id
+    name
+    description
+  }
+}
+```
+
+#### Get user categories
+
+Retrieves a list of custom categories created by the user.
+
+Protected route.
+
+```graphql
+query GetUserCategories {
+  userCategories(userId: "uuid-of-the-user") {
+    id
+    name
+    description
+  }
+}
+```
+
+#### Update an existing category
+
+Allows a user to update the details of an existing category they own. The user must provide the category ID and can update the name and/or description.
+
+Protected route.
+
+```graphql
+mutation UpdateCategory {
+  updateCategory(
+    id: "uuid-of-the-category",
+    categoryInput: {
+      name: "Updated Category Name",
+      description: "Updated description of the category"
+    }
+  ) {
+    id
+    name
+    description
+  }
+}
+```
+
+#### Delete a category
+
+Allows a user to delete an existing category they own. The user must provide the category ID.
+
+Protected route.
+
+```graphql
+mutation DeleteCategory {
+  deleteCategory(
+    id: "uuid-of-the-category"
+  ) {
+    success
+  }
+}
+```
 
 ## Installation
 
