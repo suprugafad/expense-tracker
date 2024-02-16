@@ -151,14 +151,14 @@ mutation AddTransaction {
   createTransaction(transactionInput: {
     amount: 50.00,
     type: "income",
-    category_id: "uuid-of-the-category",
+    categoryId: "uuid-of-the-category",
     description: "Freelance payment",
     date: "2024-02-16T12:00:00Z"
   }) {
     id
     amount
     type
-    category_id
+    categoryId
     description
     date
   }
@@ -189,7 +189,7 @@ query GetUserTransactions {
 
 #### Get user transactions with filters
 
-Users can filter the transactions by `date range`, `category`, or `type`. This query returns all transactions associated with the user's account that match the given filters.
+Users can filter the transactions by date range (`startDate` and `endDate`), `category`, or `type`. This query returns all transactions associated with the user's account that match the given filters.
 
 Protected route.
 
@@ -197,9 +197,9 @@ Protected route.
 query GetUserTransactions {
   transactions(
     filter: {
-      date_gte: "2024-01-01",
-      date_lte: "2024-01-31",
-      category_id: "uuid-of-the-category",
+      startDate: "2024-01-01",
+      endDate: "2024-01-31",
+      categoryId: "uuid-of-the-category",
       type: "expense"
     }
   ) {
@@ -218,7 +218,7 @@ query GetUserTransactions {
 
 #### Update an existing transaction
 
-Allows a user to update the details of an existing transaction. The user can modify fields such as `amount`, `type`, `category_id`, `description`, and `date`. The `id` of the transaction must be provided to specify which transaction is to be updated.
+Allows a user to update the details of an existing transaction. The user can modify fields such as `amount`, `type`, `categoryId`, `description`, and `date`. The `id` of the transaction must be provided to specify which transaction is to be updated.
 
 Protected route.
 
@@ -229,7 +229,7 @@ mutation UpdateTransaction {
     transactionInput: {
       amount: 15.99,
       type: "expense",
-      category_id: "uuid-of-the-category",
+      categoryId: "uuid-of-the-category",
       description: "Updated lunch",
       date: "2024-02-16T12:00:00Z"
     }
@@ -237,7 +237,7 @@ mutation UpdateTransaction {
     id
     amount
     type
-    category_id
+    categoryId
     description
     date
   }
@@ -248,7 +248,7 @@ mutation UpdateTransaction {
 
 #### Get user financial analytics for a specific period
 
-Retrieves financial analytics for a user over a specified date range. This could include total income, total expenses, and a breakdown by categories.
+Retrieves financial analytics for a user over a specified date range (`startDate` and `endDate`). This could include total income, total expenses, and a breakdown by categories.
 
 Protected route.
 
@@ -273,7 +273,7 @@ query GetUserFinancialAnalytics {
 
 #### Add a new category
 
-Allows a user to create a new custom category. The user must provide the name of the category, and optionally a description.
+Allows a user to create a new custom category. The user must provide the `name` of the category, and optionally a `description`.
 
 Protected route.
 
@@ -298,7 +298,7 @@ Protected route.
 
 ```graphql
 query GetUserCategories {
-  userCategories(userId: "uuid-of-the-user") {
+  userCategories() {
     id
     name
     description
