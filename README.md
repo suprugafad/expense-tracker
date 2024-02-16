@@ -90,9 +90,11 @@ The main functions are:
 
 #### Relationships
 
-**Transactions to Categories:** Many-to-One. Each transaction can be assigned to one category, making it easier to classify and analyze expenses. This would require adding a `category_id` field to the Transactions table to establish a foreign key relationship with the Categories table.
+**Transactions to Categories:** Many-to-One. Each transaction can be assigned to one category, making it easier to classify and analyze expenses. This would require adding a `category_id` field to the `Transactions` table to establish a foreign key relationship with the `Categories` table.
 
-**Users to Transactions:** One-to-Many. A single user can have multiple transactions, but each transaction is associated with one user. This relationship is established through the `user_id` field in the Transactions table, which acts as a foreign key to the Users table.
+**Users to Transactions:** One-to-Many. A single user can have multiple transactions, but each transaction is associated with one user. This relationship is established through the `user_id` field in the `Transactions` table, which acts as a foreign key to the `Users` table.
+
+**Users to Categories:** One-to-Many. A single user can have multiple custom categories, but category is associated with one user (default category isn't associated with any user). This relationship is established through the `user_id` field in the `Categories` table, which acts as a foreign key to the `Users` table.
 
 ## API Documentation
 
