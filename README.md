@@ -34,10 +34,10 @@ The main functions are:
 
   | Field          | Type         | Description                                     |
   |----------------|--------------|-------------------------------------------------|
-  | id             | uuid         | Primary key, unique identifier for each user.   |
+  | id             | UUID         | Primary key, unique identifier for each user.   |
   | email          | VARCHAR(255) | User's email address, used for logging in.      |
   | password_hash  | VARCHAR(255) | Hashed password for user's account security.    |
-  | name           | VARCHAR(255) | User's full name (optional).                    |
+  | name           | VARCHAR(50)  | User's full name (optional).                    |
   | created_at     | TIMESTAMP    | The date and time when the account was created. |
   | updated_at     | TIMESTAMP    | The date and time of the last account update.   |
 
@@ -47,11 +47,11 @@ The main functions are:
 
   | Field         | Type             | Description                                                |
   |---------------|------------------|------------------------------------------------------------|
-  | id            | uuid             | Primary key, unique identifier for each transaction.       |
-  | user_id       | INTEGER          | Foreign key linking to the Users table.                    |
+  | id            | UUID             | Primary key, unique identifier for each transaction.       |
+  | user_id       | UUID             | Foreign key linking to the Users table.                    |
   | amount        | DECIMAL          | The monetary value of the transaction.                     |
   | type          | transaction_type | The type of transaction, defined as an ENUM                |
-  | category      | VARCHAR(255)     | The category of the transaction (e.g., "Food", "Rent").    |
+  | category_id   | UUID             | The category of the transaction (e.g., "Food", "Rent").    |
   | description   | TEXT             | A description of the transaction.                          |
   | date          | TIMESTAMP        | The date and time when the transaction occurred.           |
   | created_at    | TIMESTAMP        | The date and time when the transaction was recorded.       |
@@ -72,7 +72,7 @@ The main functions are:
 
   | Field       | Type         | Description                                       |
   |-------------|--------------|---------------------------------------------------|
-  | id          | SERIAL       | Primary key, unique identifier for each category. |
+  | id          | UUID         | Primary key, unique identifier for each category. |
   | name        | VARCHAR(255) | The name of the category.                         |
   | description | TEXT         | A brief description of the category (optional).   |
 
