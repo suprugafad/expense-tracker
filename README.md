@@ -73,7 +73,7 @@ The main functions are:
   | Field       | Type         | Description                                       |
   |-------------|--------------|---------------------------------------------------|
   | id          | UUID         | Primary key, unique identifier for each category. |
-  | name        | VARCHAR(255) | The name of the category.                         |
+  | name        | VARCHAR(50)  | The name of the category.                         |
   | description | TEXT         | A brief description of the category (optional).   |
 
 #### Relationships
