@@ -21,11 +21,8 @@ A web application for tracking daily spending to help users manage their finance
 The main functions are:
 
 * User registration and authentication.
-
 * Enter incomings and expenses with additional information about them.
-
 * View transactions history with filters.
-
 * Expense analytics with the ability to filter data to obtain insights about financial behavior.
 
 ## Technologies
