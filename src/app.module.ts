@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import databaseConfig from 'config/database.config';
+import databaseConfig from 'src/config/database.config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { FooResolver } from './foo.resolver';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,8 +19,8 @@ import { FooResolver } from './foo.resolver';
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
+    AuthModule,
   ],
-  controllers: [],
-  providers: [FooResolver],
+  providers: [],
 })
 export class AppModule {}
