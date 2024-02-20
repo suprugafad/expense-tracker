@@ -11,6 +11,7 @@ export default registerAs(
     password: process.env.POSTGRES_PASSWORD,
     database: String(process.env.POSTGRES_DB),
     entities: [__dirname + '/../**/*.entity.ts'],
+    autoLoadEntities: true,
     synchronize: process.env.TYPEORM_SYNC === 'true',
   }),
 );
