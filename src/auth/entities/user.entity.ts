@@ -1,7 +1,8 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { RefreshToken } from './refresh-token.entity';
 
-@Entity()
+@Entity('users')
 @ObjectType('User')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -19,4 +20,7 @@ export class User {
   @Column()
   @Field()
   password: string;
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens: RefreshToken[];
 }
