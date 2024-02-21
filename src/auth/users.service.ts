@@ -24,11 +24,21 @@ export class UsersService {
     return { id: user.id, email: user.email, name: user.name };
   }
 
-  async getUser(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found.`);
+    }
+
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
     }
 
     return user;
