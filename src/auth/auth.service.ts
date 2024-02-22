@@ -40,6 +40,8 @@ export class AuthService {
       );
     }
 
+    await this.refreshTokenService.deleteOldestTokensIfLimitExceeded(user.id);
+
     const accessTokenPayload = { username: user.name, sub: user.id };
     const access_token = this.jwtService.sign(accessTokenPayload);
 
