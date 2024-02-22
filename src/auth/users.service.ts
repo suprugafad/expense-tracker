@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import { RegisterUserResponse } from './dto/register-user.response';
 import { UsersRepository } from './users.repository';
+import { RefreshTokensRepository } from './refresh-tokens.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private refreshTokensRepository: RefreshTokensRepository,
+  ) {}
 
   async createUser(
     registerUserDto: RegisterUserInput,
