@@ -117,7 +117,7 @@ Allows a new user to register an account by providing their email, password and 
 
 ```graphql
 mutation RegisterUser {
-  registerUser(userInput: { email: "user@example.com", password: "password123", name: "John Doe" }) {
+  registerUser(registerUserInput: { email: "user@example.com", password: "password123", name: "John Doe" }) {
     id
     email
     name
@@ -131,7 +131,20 @@ Authenticates a user with their email and password. Upon successful authenticati
 
 ```graphql
 mutation AuthenticateUser {
-  loginUser(email: "user@example.com", password: "password123") {
+  loginUser(loginUserInput: { email: "user@example.com", password: "password123" }) {
+    access_token
+    refresh_token
+  }
+}
+```
+
+#### Refresh the access token
+
+Allows a user to refresh their access token using a refresh token. Upon successful token refresh, returns a new access token.
+
+```graphql
+mutation RefreshAccessToken {
+  refreshToken(refreshTokenInput: { refresh_token: "your_refresh_token_here" }) {
     access_token
   }
 }
