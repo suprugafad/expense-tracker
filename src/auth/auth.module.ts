@@ -19,7 +19,7 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
       useFactory: async () => ({
         global: true,
         secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: '3m' },
+        signOptions: { expiresIn: '1h' },
       }),
     }),
   ],
@@ -34,6 +34,6 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
     RefreshTokenService,
     RefreshTokensRepository,
   ],
-  exports: [UsersService, TypeOrmModule],
+  exports: [UsersService, UsersRepository, TypeOrmModule],
 })
 export class AuthModule {}

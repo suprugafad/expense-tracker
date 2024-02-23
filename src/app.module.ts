@@ -5,6 +5,7 @@ import databaseConfig from 'src/config/database.config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
       autoSchemaFile: true,
     }),
     AuthModule,
+    CategoriesModule,
   ],
   providers: [],
 })
