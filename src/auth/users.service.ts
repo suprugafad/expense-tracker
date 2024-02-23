@@ -3,19 +3,15 @@ import { User } from './entities/user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import { RegisterUserResponse } from './dto/register-user.response';
 import { UsersRepository } from './users.repository';
-import { RefreshTokensRepository } from './refresh-tokens.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private usersRepository: UsersRepository,
-    private refreshTokensRepository: RefreshTokensRepository,
-  ) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async createUser(
-    registerUserDto: RegisterUserInput,
+    registerUserInput: RegisterUserInput,
   ): Promise<RegisterUserResponse> {
-    const { email, name, password } = registerUserDto;
+    const email = registerUserInput.email;
 
     const existingUser = await this.usersRepository.findByEmail(email);
 
@@ -23,7 +19,7 @@ export class UsersService {
       throw new Error(`User with email ${email} already exist.`);
     }
 
-    const user = await this.usersRepository.createUser(email, name, password);
+    const user = await this.usersRepository.createUser(registerUserInput);
 
     return { id: user.id, email: user.email, name: user.name };
   }
