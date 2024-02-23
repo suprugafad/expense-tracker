@@ -34,5 +34,6 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
     RefreshTokenService,
     RefreshTokensRepository,
   ],
+  exports: [UsersService, TypeOrmModule],
 })
 export class AuthModule {}
