@@ -13,6 +13,10 @@ export class UsersRepository extends Repository<User> {
     return await this.findOne({ where: { email } });
   }
 
+  async findById(id: string): Promise<User | undefined> {
+    return await this.findOne({ where: { id } });
+  }
+
   async createUser(registerUserInput: RegisterUserInput): Promise<User> {
     const user = this.create(registerUserInput);
     await this.save(user);
