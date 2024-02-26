@@ -5,6 +5,7 @@ import { CreateCategoryResponse } from './dto/create-category.response';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryResponse } from './dto/update-category.response';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
@@ -31,6 +32,10 @@ export class CategoriesService {
       name: category.name,
       description: category.description,
     };
+  }
+
+  async getUserCategories(userId: string): Promise<Category[]> {
+    return await this.categoriesRepository.findUserCategories(userId);
   }
 
   async updateCategory(

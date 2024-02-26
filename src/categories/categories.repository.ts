@@ -34,6 +34,15 @@ export class CategoriesRepository extends Repository<Category> {
     return await this.findOne({ where: { id } });
   }
 
+  async findUserCategories(userId: string): Promise<Category[]> {
+    return this.createQueryBuilder('category')
+      .leftJoinAndSelect('category.user', 'user')
+      .where('category.user.id = :userId OR category.user.id IS NULL', {
+        userId,
+      })
+      .getMany();
+  }
+
   async findByIdAndUserId(
     id: string,
     userId: string,
