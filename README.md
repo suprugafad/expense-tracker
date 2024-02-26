@@ -291,7 +291,7 @@ Protected route.
 
 ```graphql
 mutation AddCategory {
-  addCategory(categoryInput: {
+  createCategory(createCategoryInput: {
     name: "New Category",
     description: "Description of the new category"
   }) {
@@ -304,23 +304,26 @@ mutation AddCategory {
 
 #### Get user categories
 
-Retrieves a list of custom categories created by the user.
+Retrieves a list of available categories (custom and default) for the user.
 
 Protected route.
 
 ```graphql
 query GetUserCategories {
-  userCategories() {
+  getUserCategories {
     id
     name
     description
+    user {
+      id
+    }
   }
 }
 ```
 
 #### Update an existing category
 
-Allows a user to update the details of an existing category they own. The user must provide the category ID and can update the name and/or description.
+Allows a user to update the details of an existing own custom category. The user must provide the category ID and can update the name and/or description.
 
 Protected route.
 
@@ -328,7 +331,7 @@ Protected route.
 mutation UpdateCategory {
   updateCategory(
     id: "uuid-of-the-category",
-    categoryInput: {
+    updateCategoryInput: {
       name: "Updated Category Name",
       description: "Updated description of the category"
     }
@@ -342,7 +345,7 @@ mutation UpdateCategory {
 
 #### Delete a category
 
-Allows a user to delete an existing category they own. The user must provide the category ID.
+Allows a user to delete an existing own custom category. The user must provide the category ID.
 
 Protected route.
 
