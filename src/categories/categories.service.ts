@@ -1,3 +1,4 @@
+import { UsersService } from './../auth/users.service';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
 import { Injectable } from '@nestjs/common';
 import { CategoriesRepository } from './categories.repository';
@@ -9,7 +10,10 @@ import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private categoriesRepository: CategoriesRepository) {}
+  constructor(
+    private categoriesRepository: CategoriesRepository,
+    private usersService: UsersService,
+  ) {}
 
   async createCategory(
     createCategoryDto: CreateCategoryDto,
@@ -23,8 +27,11 @@ export class CategoriesService {
       throw new Error(`Category with name "${name}" already exist.`);
     }
 
+    const user = await this.usersService.getUserById(userId);
+
     const category = await this.categoriesRepository.createCategory(
       createCategoryDto,
+      user,
     );
 
     return {
@@ -48,11 +55,26 @@ export class CategoriesService {
     );
 
     if (!existingCategory) {
-      throw new Error(`Category with id "${id}" not exist.`);
+      throw new Error(`Custom category with id "${id}" not exist.`);
     }
 
     await this.categoriesRepository.updateCategory(id, updateCategoryDto);
 
     return await this.categoriesRepository.findById(id);
+  }
+
+  async deleteCategory(id: string, userId: string): Promise<void> {
+    const existingCategory = await this.categoriesRepository.findByIdAndUserId(
+      id,
+      userId,
+    );
+
+    if (!existingCategory) {
+      throw new Error(
+        `Category with id "${id}" not found or you don't have permission to delete this category.`,
+      );
+    }
+
+    await this.categoriesRepository.deleteById(id);
   }
 }

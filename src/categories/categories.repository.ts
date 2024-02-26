@@ -1,29 +1,20 @@
-import { UsersRepository } from './../auth/users.repository';
 import { DataSource, Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class CategoriesRepository extends Repository<Category> {
-  constructor(
-    private dataSource: DataSource,
-    private usersRepository: UsersRepository,
-  ) {
+  constructor(private dataSource: DataSource) {
     super(Category, dataSource.createEntityManager());
   }
 
   async createCategory(
     createCategoryDto: CreateCategoryDto,
+    user: User,
   ): Promise<Category> {
-    const userId = createCategoryDto.userId;
-
-    const user = await this.usersRepository.findById(userId);
-    if (!user) {
-      throw new NotFoundException(` User with id ${userId} not found`);
-    }
-
     const category = this.create({ ...createCategoryDto, user });
 
     await this.save(category);
@@ -52,13 +43,6 @@ export class CategoriesRepository extends Repository<Category> {
     });
   }
 
-  async updateCategory(
-    id: string,
-    updateCategoryDto: UpdateCategoryDto,
-  ): Promise<void> {
-    await this.update(id, updateCategoryDto);
-  }
-
   async findByNameAndUserId(
     name: string,
     userId: string,
@@ -66,5 +50,16 @@ export class CategoriesRepository extends Repository<Category> {
     return await this.findOne({
       where: { name, user: { id: userId || null } },
     });
+  }
+
+  async updateCategory(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<void> {
+    await this.update(id, updateCategoryDto);
+  }
+
+  async deleteById(id: string) {
+    await this.delete(id);
   }
 }

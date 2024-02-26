@@ -8,6 +8,7 @@ import { UpdateCategoryResponse } from './dto/update-category.response';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
 import { Category } from './entities/category.entity';
+import { DeleteCategoryResponse } from './dto/delete-category.response';
 
 @Resolver()
 export class CategoriesResolver {
@@ -21,7 +22,7 @@ export class CategoriesResolver {
   ): Promise<CreateCategoryResponse> {
     const userId = ctx.req.user.id;
 
-    return this.categoriesService.createCategory({
+    return await this.categoriesService.createCategory({
       ...createCategoryInput,
       userId,
     });
@@ -35,12 +36,13 @@ export class CategoriesResolver {
     @Context() ctx: any,
   ): Promise<UpdateCategoryResponse> {
     const userId = ctx.req.user.id;
+
     const updateCategoryRequestDto: UpdateCategoryRequestDto = {
       id,
       userId,
     };
 
-    return this.categoriesService.updateCategory(
+    return await this.categoriesService.updateCategory(
       updateCategoryRequestDto,
       updateCategoryInput,
     );
@@ -50,6 +52,19 @@ export class CategoriesResolver {
   @UseGuards(JwtAuthGuard)
   async getUserCategories(@Context() ctx: any): Promise<Category[]> {
     const userId = ctx.req.user.id;
-    return this.categoriesService.getUserCategories(userId);
+
+    return await this.categoriesService.getUserCategories(userId);
+  }
+
+  @Mutation(() => DeleteCategoryResponse)
+  @UseGuards(JwtAuthGuard)
+  async deleteCategory(
+    @Args('id', { type: () => ID }) categoryId: string,
+    @Context() ctx: any,
+  ): Promise<DeleteCategoryResponse> {
+    const userId = ctx.req.user.id;
+
+    await this.categoriesService.deleteCategory(categoryId, userId);
+    return { success: true };
   }
 }
