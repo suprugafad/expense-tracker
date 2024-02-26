@@ -1,12 +1,8 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 
 @InputType()
 export class UpdateCategoryInput {
-  @Field()
-  @IsUUID('4')
-  id: string;
-
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
