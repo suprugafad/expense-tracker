@@ -9,6 +9,8 @@ export class LoginUserInput {
 
   @Field()
   @IsString()
-  @Length(6)
+  @Length(6, undefined, {
+    message: 'Password must be at least 6 characters long',
+  })
   password: string;
 }
