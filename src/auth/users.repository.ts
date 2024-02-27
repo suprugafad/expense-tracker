@@ -24,6 +24,10 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
+  async saveUser(user: User): Promise<void> {
+    await this.save(user);
+  }
+
   async updateUserInfo(
     id: string,
     updateUserInput: UpdateUserInput,
