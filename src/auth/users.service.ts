@@ -1,8 +1,11 @@
+import { ChangeUserPasswordInput } from './dto/change-user-password.input';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import { RegisterUserResponse } from './dto/register-user.response';
 import { UsersRepository } from './users.repository';
+import { UpdateUserInput } from './dto/update-user.input';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,11 +16,7 @@ export class UsersService {
   ): Promise<RegisterUserResponse> {
     const email = registerUserInput.email;
 
-    const existingUser = await this.usersRepository.findByEmail(email);
-
-    if (existingUser) {
-      throw new Error(`User with email ${email} already exist.`);
-    }
+    await this.getUserByEmail(email);
 
     const user = await this.usersRepository.createUser(registerUserInput);
 
@@ -42,5 +41,36 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async updateUserInfo(
+    id: string,
+    updateUserInput: UpdateUserInput,
+  ): Promise<User> {
+    await this.getUserById(id);
+
+    await this.usersRepository.updateUserInfo(id, updateUserInput);
+
+    return await this.usersRepository.findById(id);
+  }
+
+  async changeUserPassword(
+    id: string,
+    changeUserPasswordInput: ChangeUserPasswordInput,
+  ): Promise<void> {
+    const user = await this.getUserById(id);
+
+    const { oldPassword, newPassword } = changeUserPasswordInput;
+
+    const valid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!valid) {
+      throw new Error('Old password is incorrect');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    user.password = hashedPassword;
+
+    await this.usersRepository.saveUser(user);
   }
 }

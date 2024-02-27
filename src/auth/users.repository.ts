@@ -1,3 +1,4 @@
+import { UpdateUserInput } from './dto/update-user.input';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
@@ -21,5 +22,16 @@ export class UsersRepository extends Repository<User> {
     const user = this.create(registerUserInput);
     await this.save(user);
     return user;
+  }
+
+  async saveUser(user: User): Promise<void> {
+    await this.save(user);
+  }
+
+  async updateUserInfo(
+    id: string,
+    updateUserInput: UpdateUserInput,
+  ): Promise<void> {
+    await this.update(id, updateUserInput);
   }
 }

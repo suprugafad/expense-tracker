@@ -142,10 +142,53 @@ mutation AuthenticateUser {
 
 Allows a user to refresh their access token using a refresh token. Upon successful token refresh, returns a new access token.
 
+Protected route.
+
 ```graphql
 mutation RefreshAccessToken {
   refreshToken(refreshTokenInput: { refresh_token: "your_refresh_token_here" }) {
     access_token
+  }
+}
+```
+
+### User Profile Management
+
+#### Update user information
+
+Allows a user to update the details of own profile (email and/or name).
+
+Protected route.
+
+```graphql
+mutation UpdateUserProfile {
+  updateUserProfile(
+    updateUserInput: {
+      name: "John Doe",
+      email: "user@example.com"
+    }
+  ) {
+    name
+    email
+  }
+}
+```
+
+#### Change user password
+
+Allows a user to change password.
+
+Protected route.
+
+```graphql
+mutation ChangeUserPassword {
+  changeUserPassword(
+    changeUserPasswordInput: {
+      oldPassword: "password123",
+      newPassword: "password111"
+    }
+  ) {
+    success
   }
 }
 ```

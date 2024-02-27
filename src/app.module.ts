@@ -19,6 +19,21 @@ import { CategoriesModule } from './categories/categories.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      formatError: (error) => {
+        const graphQLFormattedError = error.extensions?.originalError as {
+          message?: string;
+          error?: string;
+          statusCode?: number;
+        };
+        if (graphQLFormattedError) {
+          return {
+            message: graphQLFormattedError.message,
+            error: graphQLFormattedError.error,
+            statusCode: graphQLFormattedError.statusCode,
+          };
+        }
+        return error;
+      },
     }),
     AuthModule,
     CategoriesModule,

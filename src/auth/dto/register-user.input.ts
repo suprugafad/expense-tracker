@@ -16,6 +16,8 @@ export class RegisterUserInput {
 
   @Field()
   @IsString()
-  @Length(6, 255)
+  @Length(6, 255, {
+    message: 'Password must be from 6 to 255 characters long',
+  })
   password: string;
 }
