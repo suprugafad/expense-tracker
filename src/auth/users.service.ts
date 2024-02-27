@@ -3,6 +3,7 @@ import { User } from './entities/user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import { RegisterUserResponse } from './dto/register-user.response';
 import { UsersRepository } from './users.repository';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UsersService {
@@ -42,5 +43,20 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async updateUserInfo(
+    id: string,
+    updateUserInput: UpdateUserInput,
+  ): Promise<User> {
+    const existingUser = await this.usersRepository.findById(id);
+
+    if (!existingUser) {
+      throw new Error(`User with id "${id}" not exist.`);
+    }
+
+    await this.usersRepository.updateUserInfo(id, updateUserInput);
+
+    return await this.usersRepository.findById(id);
   }
 }
