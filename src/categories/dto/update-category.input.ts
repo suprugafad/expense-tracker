@@ -7,7 +7,7 @@ export class UpdateCategoryInput {
   @IsOptional()
   @IsString()
   @Length(0, 50)
-  name: string;
+  name?: string;
 
   @Field({ nullable: true })
   @IsOptional()

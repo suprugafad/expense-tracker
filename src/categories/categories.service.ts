@@ -5,8 +5,8 @@ import { CategoriesRepository } from './categories.repository';
 import { CreateCategoryResponse } from './dto/create-category.response';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryResponse } from './dto/update-category.response';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
+import { UpdateCategoryInput } from './dto/update-category.input';
 
 @Injectable()
 export class CategoriesService {
@@ -63,11 +63,11 @@ export class CategoriesService {
 
   async updateCategory(
     { id, userId }: UpdateCategoryRequestDto,
-    updateCategoryDto: UpdateCategoryDto,
+    updateCategoryInput: UpdateCategoryInput,
   ): Promise<UpdateCategoryResponse> {
     await this.getCategoryByIdAndUserId(id, userId);
 
-    await this.categoriesRepository.updateCategory(id, updateCategoryDto);
+    await this.categoriesRepository.updateCategory(id, updateCategoryInput);
 
     return await this.categoriesRepository.findById(id);
   }

@@ -2,8 +2,8 @@ import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { User } from 'src/auth/entities/user.entity';
+import { UpdateCategoryInput } from './dto/update-category.input';
 
 @Injectable()
 export class CategoriesRepository extends Repository<Category> {
@@ -54,9 +54,9 @@ export class CategoriesRepository extends Repository<Category> {
 
   async updateCategory(
     id: string,
-    updateCategoryDto: UpdateCategoryDto,
+    updateCategoryInput: UpdateCategoryInput,
   ): Promise<void> {
-    await this.update(id, updateCategoryDto);
+    await this.update(id, updateCategoryInput);
   }
 
   async deleteById(id: string) {
