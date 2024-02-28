@@ -4,6 +4,7 @@ import { TransactionsRepository } from './transactions.repository';
 import { Injectable } from '@nestjs/common';
 import { CategoriesService } from 'src/categories/categories.service';
 import { TransactionResponse } from './dto/transaction.response';
+import { TransactionFilterInput } from './dto/transaction-filter.input';
 
 @Injectable()
 export class TransactionsService {
@@ -33,7 +34,10 @@ export class TransactionsService {
 
     return { ...transaction };
   }
-  async getUserTransactions(userId: string): Promise<TransactionResponse[]> {
-    return await this.transactionsRepository.findByUserId(userId);
+  async getUserTransactions(
+    userId: string,
+    filters?: TransactionFilterInput,
+  ): Promise<TransactionResponse[]> {
+    return await this.transactionsRepository.findByUserId(userId, filters);
   }
 }

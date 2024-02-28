@@ -4,6 +4,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { TransactionResponse } from './dto/transaction.response';
 import { UseGuards } from '@nestjs/common';
+import { TransactionFilterInput } from './dto/transaction-filter.input';
 
 @Resolver()
 export class TransactionsResolver {
@@ -27,9 +28,10 @@ export class TransactionsResolver {
   @UseGuards(JwtAuthGuard)
   async getUserTransactions(
     @Context() ctx: any,
+    @Args('filters', { nullable: true }) filters: TransactionFilterInput,
   ): Promise<TransactionResponse[]> {
     const userId = ctx.req.user.id;
 
-    return await this.transactionsService.getUserTransactions(userId);
+    return await this.transactionsService.getUserTransactions(userId, filters);
   }
 }
