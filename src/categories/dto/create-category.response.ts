@@ -9,5 +9,5 @@ export class CreateCategoryResponse {
   name: string;
 
   @Field({ nullable: true })
-  description: string;
+  description?: string;
 }
