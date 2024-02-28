@@ -19,9 +19,9 @@ export class Transaction {
   @Field(() => ID)
   id: string;
 
-  @Column()
+  @Column({ type: 'decimal', scale: 2 })
   @Field()
-  amount: string;
+  amount: number;
 
   @Column({
     type: 'enum',
