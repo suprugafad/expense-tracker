@@ -11,7 +11,7 @@ class TransactionCategoryResponse {
 }
 
 @ObjectType()
-export class CreateTransactionResponse {
+export class TransactionResponse {
   @Field(() => ID)
   id: string;
 

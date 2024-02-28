@@ -17,4 +17,11 @@ export class TransactionsRepository extends Repository<Transaction> {
 
     return transaction;
   }
+
+  async findByUserId(userId: string): Promise<Transaction[]> {
+    return await this.find({
+      where: { user: { id: userId } },
+      relations: ['category'],
+    });
+  }
 }
