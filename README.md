@@ -197,15 +197,15 @@ mutation ChangeUserPassword {
 
 #### Add a new transaction
 
-Allows a user to add a new transaction. The user must provide the `amount`, `type` (as an ENUM of either 'income' or 'expense'), `category_id` (referencing an existing category by UUID), `description`, and the `date` of the transaction.
+Allows a user to add a new transaction. The user must provide the `amount`, `type` (as an ENUM of either 'income' or 'expense'), `category` (with `ID` and `name`), `description` and the `date` of the transaction.
 
 Protected route.
 
 ```graphql
 mutation AddTransaction {
-  createTransaction(transactionInput: {
+  createTransaction(createTransactionInput: {
     amount: 50.00,
-    type: "income",
+    type: INCOME,
     categoryId: "uuid-of-the-category",
     description: "Freelance payment",
     date: "2024-02-16T12:00:00Z"
@@ -213,7 +213,10 @@ mutation AddTransaction {
     id
     amount
     type
-    categoryId
+    category {
+      id
+      name
+    }
     description
     date
   }
@@ -228,7 +231,7 @@ Protected route.
 
 ```graphql
 query GetUserTransactions {
-  transactions() {
+  getUserTransactions {
     id
     amount
     type
@@ -244,18 +247,18 @@ query GetUserTransactions {
 
 #### Get user transactions with filters
 
-Users can filter the transactions by date range (`startDate` and `endDate`), `category`, or `type`. This query returns all transactions associated with the user's account that match the given filters.
+Users can filter the transactions by date range (`startDate` and/or `endDate`), `category`, or `type`. This query returns all transactions associated with the user's account that match the given filters.
 
 Protected route.
 
 ```graphql
 query GetUserTransactions {
-  transactions(
-    filter: {
+  getUserTransactions(
+    filters: {
       startDate: "2024-01-01",
       endDate: "2024-01-31",
       categoryId: "uuid-of-the-category",
-      type: "expense"
+      type: EXPENSE
     }
   ) {
     id
@@ -281,9 +284,9 @@ Protected route.
 mutation UpdateTransaction {
   updateTransaction(
     id: "uuid-of-the-transaction",
-    transactionInput: {
+    updateTransactionInput: {
       amount: 15.99,
-      type: "expense",
+      type: EXPENSE,
       categoryId: "uuid-of-the-category",
       description: "Updated lunch",
       date: "2024-02-16T12:00:00Z"
@@ -292,9 +295,28 @@ mutation UpdateTransaction {
     id
     amount
     type
-    categoryId
+    category {
+      id
+      name
+    }
     description
     date
+  }
+}
+```
+
+#### Delete a transaction
+
+Allows a user to delete an existing own transaction. The user must provide the transaction ID.
+
+Protected route.
+
+```graphql
+mutation DeleteTransaction {
+  deleteTransaction(
+    id: "uuid-of-the-category"
+  ) {
+    success
   }
 }
 ```
