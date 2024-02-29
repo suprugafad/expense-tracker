@@ -61,6 +61,10 @@ export class CategoriesService {
     return category;
   }
 
+  async getCategoryById(id: string): Promise<Category> {
+    return await this.categoriesRepository.findById(id);
+  }
+
   async updateCategory(
     { id, userId }: UpdateCategoryRequestDto,
     updateCategoryInput: UpdateCategoryInput,
