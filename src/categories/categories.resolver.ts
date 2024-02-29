@@ -59,12 +59,12 @@ export class CategoriesResolver {
   @Mutation(() => DeleteCategoryResponse)
   @UseGuards(JwtAuthGuard)
   async deleteCategory(
-    @Args('id', { type: () => ID }) categoryId: string,
+    @Args('id', { type: () => ID }) id: string,
     @Context() ctx: any,
   ): Promise<DeleteCategoryResponse> {
     const userId = ctx.req.user.id;
 
-    await this.categoriesService.deleteCategory(categoryId, userId);
+    await this.categoriesService.deleteCategory(id, userId);
     return { success: true };
   }
 }

@@ -1,12 +1,12 @@
 import { UsersService } from './../auth/users.service';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoriesRepository } from './categories.repository';
 import { CreateCategoryResponse } from './dto/create-category.response';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryResponse } from './dto/update-category.response';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
+import { UpdateCategoryInput } from './dto/update-category.input';
 
 @Injectable()
 export class CategoriesService {
@@ -24,7 +24,9 @@ export class CategoriesService {
       await this.categoriesRepository.findByNameAndUserId(name, userId);
 
     if (existingCategory) {
-      throw new Error(`Category with name "${name}" already exist.`);
+      throw new NotFoundException(
+        `Category with name "${name}" already exist.`,
+      );
     }
 
     const user = await this.usersService.getUserById(userId);
@@ -35,9 +37,7 @@ export class CategoriesService {
     );
 
     return {
-      id: category.id,
-      name: category.name,
-      description: category.description,
+      ...category,
     };
   }
 
@@ -45,35 +45,39 @@ export class CategoriesService {
     return await this.categoriesRepository.findUserCategories(userId);
   }
 
-  async updateCategory(
-    { id, userId }: UpdateCategoryRequestDto,
-    updateCategoryDto: UpdateCategoryDto,
-  ): Promise<UpdateCategoryResponse> {
-    const existingCategory = await this.categoriesRepository.findByIdAndUserId(
+  async getCategoryByIdAndUserId(
+    id: string,
+    userId: string,
+  ): Promise<Category> {
+    const category = await this.categoriesRepository.findByIdAndUserId(
       id,
       userId,
     );
 
-    if (!existingCategory) {
-      throw new Error(`Custom category with id "${id}" not exist.`);
+    if (!category) {
+      throw new NotFoundException(`Custom category with id "${id}" not exist.`);
     }
 
-    await this.categoriesRepository.updateCategory(id, updateCategoryDto);
+    return category;
+  }
+
+  async getCategoryById(id: string): Promise<Category> {
+    return await this.categoriesRepository.findById(id);
+  }
+
+  async updateCategory(
+    { id, userId }: UpdateCategoryRequestDto,
+    updateCategoryInput: UpdateCategoryInput,
+  ): Promise<UpdateCategoryResponse> {
+    await this.getCategoryByIdAndUserId(id, userId);
+
+    await this.categoriesRepository.updateCategory(id, updateCategoryInput);
 
     return await this.categoriesRepository.findById(id);
   }
 
   async deleteCategory(id: string, userId: string): Promise<void> {
-    const existingCategory = await this.categoriesRepository.findByIdAndUserId(
-      id,
-      userId,
-    );
-
-    if (!existingCategory) {
-      throw new Error(
-        `Category with id "${id}" not found or you don't have permission to delete this category.`,
-      );
-    }
+    await this.getCategoryByIdAndUserId(id, userId);
 
     await this.categoriesRepository.deleteById(id);
   }
