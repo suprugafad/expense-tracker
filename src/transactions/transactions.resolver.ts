@@ -1,10 +1,11 @@
 import { TransactionsService } from './transactions.service';
-import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { Args, Context, Mutation, Resolver, Query, ID } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { TransactionResponse } from './dto/transaction.response';
 import { UseGuards } from '@nestjs/common';
 import { TransactionFilterInput } from './dto/transaction-filter.input';
+import { UpdateTransactionInput } from './dto/update-transaction.input';
 
 @Resolver()
 export class TransactionsResolver {
@@ -33,5 +34,18 @@ export class TransactionsResolver {
     const userId = ctx.req.user.id;
 
     return await this.transactionsService.getUserTransactions(userId, filters);
+  }
+
+  @Mutation(() => TransactionResponse)
+  @UseGuards(JwtAuthGuard)
+  async updateTransaction(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('updateTransactionInput')
+    updateTransactionInput: UpdateTransactionInput,
+  ): Promise<TransactionResponse> {
+    return await this.transactionsService.updateTransaction(
+      id,
+      updateTransactionInput,
+    );
   }
 }

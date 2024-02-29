@@ -1,3 +1,4 @@
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionFilterInput } from './dto/transaction-filter.input';
 import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
@@ -53,5 +54,16 @@ export class TransactionsRepository extends Repository<Transaction> {
     }
 
     return await query.getMany();
+  }
+
+  async findById(id: string): Promise<Transaction> {
+    return await this.findOne({ where: { id }, relations: ['category'] });
+  }
+
+  async updateTransaction(
+    id: string,
+    updateTransactionDto: UpdateTransactionDto,
+  ): Promise<void> {
+    await this.update(id, updateTransactionDto);
   }
 }
