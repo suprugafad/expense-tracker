@@ -6,6 +6,7 @@ import { TransactionResponse } from './dto/transaction.response';
 import { UseGuards } from '@nestjs/common';
 import { TransactionFilterInput } from './dto/transaction-filter.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
+import { DeleteTransactionResponse } from './dto/delete-transaction.response';
 
 @Resolver()
 export class TransactionsResolver {
@@ -47,5 +48,14 @@ export class TransactionsResolver {
       id,
       updateTransactionInput,
     );
+  }
+
+  @Mutation(() => DeleteTransactionResponse)
+  @UseGuards(JwtAuthGuard)
+  async deleteTransaction(
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<DeleteTransactionResponse> {
+    await this.transactionsService.deleteTransaction(id);
+    return { success: true };
   }
 }

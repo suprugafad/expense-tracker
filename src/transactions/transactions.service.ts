@@ -79,4 +79,10 @@ export class TransactionsService {
 
     return await this.getTransactionById(id);
   }
+
+  async deleteTransaction(id: string): Promise<void> {
+    await this.getTransactionById(id);
+
+    await this.transactionsRepository.deleteById(id);
+  }
 }

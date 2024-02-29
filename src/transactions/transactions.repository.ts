@@ -66,4 +66,8 @@ export class TransactionsRepository extends Repository<Transaction> {
   ): Promise<void> {
     await this.update(id, updateTransactionDto);
   }
+
+  async deleteById(id: string) {
+    await this.delete(id);
+  }
 }
