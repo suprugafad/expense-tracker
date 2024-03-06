@@ -363,6 +363,9 @@ mutation AddCategory {
     id
     name
     description
+    user {
+      id
+    }
   }
 }
 ```
@@ -404,6 +407,9 @@ mutation UpdateCategory {
     id
     name
     description
+    user {
+      id
+    }
   }
 }
 ```

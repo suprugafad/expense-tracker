@@ -2,9 +2,8 @@ import { UsersService } from './../auth/users.service';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoriesRepository } from './categories.repository';
-import { CreateCategoryResponse } from './dto/create-category.response';
+import { CategoryResponse } from './dto/category.response';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryResponse } from './dto/update-category.response';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryInput } from './dto/update-category.input';
 
@@ -17,7 +16,7 @@ export class CategoriesService {
 
   async createCategory(
     createCategoryDto: CreateCategoryDto,
-  ): Promise<CreateCategoryResponse> {
+  ): Promise<CategoryResponse> {
     const { name, userId } = createCategoryDto;
 
     const existingCategory =
@@ -41,7 +40,7 @@ export class CategoriesService {
     };
   }
 
-  async getUserCategories(userId: string): Promise<Category[]> {
+  async getUserCategories(userId: string): Promise<CategoryResponse[]> {
     return await this.categoriesRepository.findUserCategories(userId);
   }
 
@@ -68,7 +67,7 @@ export class CategoriesService {
   async updateCategory(
     { id, userId }: UpdateCategoryRequestDto,
     updateCategoryInput: UpdateCategoryInput,
-  ): Promise<UpdateCategoryResponse> {
+  ): Promise<CategoryResponse> {
     await this.getCategoryByIdAndUserId(id, userId);
 
     await this.categoriesRepository.updateCategory(id, updateCategoryInput);

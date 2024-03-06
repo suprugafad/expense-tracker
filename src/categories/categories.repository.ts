@@ -22,7 +22,7 @@ export class CategoriesRepository extends Repository<Category> {
   }
 
   async findById(id: string): Promise<Category> {
-    return await this.findOne({ where: { id } });
+    return await this.findOne({ where: { id }, relations: ['user'] });
   }
 
   async findUserCategories(userId: string): Promise<Category[]> {
