@@ -1,19 +1,19 @@
 import { RefreshTokenResponse } from './dto/refresh-token.response';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { RegisterUserResponse } from './dto/register-user.response';
 import { RegisterUserInput } from './dto/register-user.input';
 import { LoginUserResponse } from './dto/login-user.response';
 import { LoginUserInput } from './dto/login-user.input';
+import { UserResponse } from './dto/user.response';
 
 @Resolver()
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  @Mutation(() => RegisterUserResponse)
+  @Mutation(() => UserResponse)
   async registerUser(
     @Args('registerUserInput') registerUserDto: RegisterUserInput,
-  ): Promise<RegisterUserResponse> {
+  ): Promise<UserResponse> {
     return this.authService.registerUser(registerUserDto);
   }
 

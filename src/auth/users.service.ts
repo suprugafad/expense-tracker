@@ -1,8 +1,8 @@
+import { UserResponse } from './dto/user.response';
 import { ChangeUserPasswordInput } from './dto/change-user-password.input';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
-import { RegisterUserResponse } from './dto/register-user.response';
 import { UsersRepository } from './users.repository';
 import { UpdateUserInput } from './dto/update-user.input';
 import * as bcrypt from 'bcrypt';
@@ -13,7 +13,7 @@ export class UsersService {
 
   async createUser(
     registerUserInput: RegisterUserInput,
-  ): Promise<RegisterUserResponse> {
+  ): Promise<UserResponse> {
     const email = registerUserInput.email;
 
     await this.getUserByEmail(email);
@@ -46,12 +46,18 @@ export class UsersService {
   async updateUserInfo(
     id: string,
     updateUserInput: UpdateUserInput,
-  ): Promise<User> {
+  ): Promise<UserResponse> {
     await this.getUserById(id);
 
     await this.usersRepository.updateUserInfo(id, updateUserInput);
 
-    return await this.usersRepository.findById(id);
+    const updatedUser = await this.usersRepository.findById(id);
+
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    };
   }
 
   async changeUserPassword(
