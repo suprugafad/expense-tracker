@@ -8,6 +8,8 @@ import { TransactionResponse } from './dto/transaction.response';
 import { TransactionFilterInput } from './dto/transaction-filter.input';
 import { Transaction } from './entities/transaction.entity';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { AccountSummaryResponse } from './dto/account-summary.response';
+import { TransactionTypeEnum } from './transaction-type.enum';
 
 @Injectable()
 export class TransactionsService {
@@ -52,6 +54,30 @@ export class TransactionsService {
     }
 
     return transaction;
+  }
+
+  async getAccountSummary(userId: string): Promise<AccountSummaryResponse> {
+    const startDate = new Date();
+    startDate.setDate(1);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date();
+
+    const income = await this.transactionsRepository.calculateSum(
+      TransactionTypeEnum.INCOME,
+      userId,
+      startDate,
+      endDate,
+    );
+
+    const expenses = await this.transactionsRepository.calculateSum(
+      TransactionTypeEnum.EXPENSES,
+      userId,
+      startDate,
+      endDate,
+    );
+
+    return { income, expenses };
   }
 
   async updateTransaction(

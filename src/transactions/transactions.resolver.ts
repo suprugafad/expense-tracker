@@ -7,6 +7,7 @@ import { UseGuards } from '@nestjs/common';
 import { TransactionFilterInput } from './dto/transaction-filter.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { DeleteTransactionResponse } from './dto/delete-transaction.response';
+import { AccountSummaryResponse } from './dto/account-summary.response';
 
 @Resolver()
 export class TransactionsResolver {
@@ -35,6 +36,16 @@ export class TransactionsResolver {
     const userId = ctx.req.user.id;
 
     return await this.transactionsService.getUserTransactions(userId, filters);
+  }
+
+  @Query(() => AccountSummaryResponse)
+  @UseGuards(JwtAuthGuard)
+  async getAccountSummary(
+    @Context() ctx: any,
+  ): Promise<AccountSummaryResponse> {
+    const userId = ctx.req.user.id;
+
+    return await this.transactionsService.getAccountSummary(userId);
   }
 
   @Mutation(() => TransactionResponse)

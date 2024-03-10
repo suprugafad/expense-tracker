@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Transaction } from './entities/transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { TransactionTypeEnum } from './transaction-type.enum';
 
 @Injectable()
 export class TransactionsRepository extends Repository<Transaction> {
@@ -54,6 +55,23 @@ export class TransactionsRepository extends Repository<Transaction> {
     }
 
     return await query.getMany();
+  }
+
+  async calculateSum(
+    type: TransactionTypeEnum,
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    const result = await this.createQueryBuilder('transaction')
+      .select('SUM(transaction.amount)', 'sum')
+      .where('transaction.user_id = :userId', { userId })
+      .andWhere('transaction.type = :type', { type })
+      .andWhere('transaction.date >= :startDate', { startDate })
+      .andWhere('transaction.date <= :endDate', { endDate })
+      .getRawOne();
+
+    return parseFloat(result.sum) || 0;
   }
 
   async findById(id: string): Promise<Transaction> {
