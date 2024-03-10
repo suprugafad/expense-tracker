@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { Transaction } from './entities/transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionTypeEnum } from './transaction-type.enum';
+import { GetExpensesByDayResponse } from './dto/get-expenses-by-day.response';
 
 @Injectable()
 export class TransactionsRepository extends Repository<Transaction> {
@@ -72,6 +73,32 @@ export class TransactionsRepository extends Repository<Transaction> {
       .getRawOne();
 
     return parseFloat(result.sum) || 0;
+  }
+
+  async calculateExpensesByDay(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<GetExpensesByDayResponse[]> {
+    const results = await this.createQueryBuilder('transaction')
+      .select("date_trunc('day', transaction.date)", 'day')
+      .addSelect('SUM(transaction.amount)', 'sum')
+      .where('transaction.user_id = :userId', { userId })
+      .andWhere('transaction.type = :type', {
+        type: TransactionTypeEnum.EXPENSES,
+      })
+      .andWhere('transaction.date BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
+      .groupBy('day')
+      .orderBy('day', 'ASC')
+      .getRawMany();
+
+    return results.map((row) => ({
+      day: row.day,
+      sum: parseFloat(row.sum),
+    }));
   }
 
   async findById(id: string): Promise<Transaction> {

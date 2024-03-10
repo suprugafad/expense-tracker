@@ -10,6 +10,14 @@ import { Transaction } from './entities/transaction.entity';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { AccountSummaryResponse } from './dto/account-summary.response';
 import { TransactionTypeEnum } from './transaction-type.enum';
+import { GetExpensesByDayResponse } from './dto/get-expenses-by-day.response';
+import {
+  eachDayOfInterval,
+  endOfDay,
+  format,
+  startOfDay,
+  subDays,
+} from 'date-fns';
 
 @Injectable()
 export class TransactionsService {
@@ -78,6 +86,37 @@ export class TransactionsService {
     );
 
     return { income, expenses };
+  }
+
+  async getExpensesByDay(
+    userId: string,
+    days: number,
+  ): Promise<GetExpensesByDayResponse[]> {
+    const endDate = endOfDay(new Date());
+    const startDate = startOfDay(subDays(endDate, days - 1));
+
+    const expenseRecords =
+      await this.transactionsRepository.calculateExpensesByDay(
+        userId,
+        startDate,
+        endDate,
+      );
+
+    const daysArray = eachDayOfInterval({ start: startDate, end: endDate }).map(
+      (day) => format(day, 'yyyy-MM-dd'),
+    );
+
+    const expensesByDay = daysArray.map((dayString) => {
+      const expenseForDay = expenseRecords.find(
+        (record) => format(record.day, 'yyyy-MM-dd') === dayString,
+      );
+      return {
+        day: format(dayString, 'dd.MM'),
+        sum: expenseForDay ? expenseForDay.sum : 0,
+      };
+    });
+
+    return expensesByDay;
   }
 
   async updateTransaction(
