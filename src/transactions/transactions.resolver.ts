@@ -7,6 +7,8 @@ import { UseGuards } from '@nestjs/common';
 import { TransactionFilterInput } from './dto/transaction-filter.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { DeleteTransactionResponse } from './dto/delete-transaction.response';
+import { AccountSummaryResponse } from './dto/account-summary.response';
+import { GetExpensesByDayResponse } from './dto/get-expenses-by-day.response';
 
 @Resolver()
 export class TransactionsResolver {
@@ -35,6 +37,27 @@ export class TransactionsResolver {
     const userId = ctx.req.user.id;
 
     return await this.transactionsService.getUserTransactions(userId, filters);
+  }
+
+  @Query(() => AccountSummaryResponse)
+  @UseGuards(JwtAuthGuard)
+  async getAccountSummary(
+    @Context() ctx: any,
+  ): Promise<AccountSummaryResponse> {
+    const userId = ctx.req.user.id;
+
+    return await this.transactionsService.getAccountSummary(userId);
+  }
+
+  @Query(() => [GetExpensesByDayResponse])
+  @UseGuards(JwtAuthGuard)
+  async getExpensesByDay(
+    @Context() ctx: any,
+    @Args('days') days: number,
+  ): Promise<GetExpensesByDayResponse[]> {
+    const userId = ctx.req.user.id;
+
+    return await this.transactionsService.getExpensesByDay(userId, days);
   }
 
   @Mutation(() => TransactionResponse)

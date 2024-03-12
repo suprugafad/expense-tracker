@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsOptional, IsUUID, IsDate, IsEnum } from 'class-validator';
+import { IsOptional, IsUUID, IsDate, IsEnum, IsNumber } from 'class-validator';
 import { TransactionTypeEnum } from '../transaction-type.enum';
 
 @InputType()
@@ -23,4 +23,9 @@ export class TransactionFilterInput {
   @IsOptional()
   @IsEnum(TransactionTypeEnum)
   type?: TransactionTypeEnum;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
 }
