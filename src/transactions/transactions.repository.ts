@@ -53,6 +53,9 @@ export class TransactionsRepository extends Repository<Transaction> {
           type: filters.type,
         });
       }
+      if (filters.limit) {
+        query = query.take(filters.limit);
+      }
     }
 
     return await query.getMany();
