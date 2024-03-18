@@ -1,7 +1,6 @@
 import { RegisterUserInput } from './dto/register-user.input';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { RegisterUserResponse } from './dto/register-user.response';
 import { UsersService } from './users.service';
 import { LoginUserInput } from './dto/login-user.input';
 import { LoginUserResponse } from './dto/login-user.response';
@@ -10,6 +9,7 @@ import { RefreshTokenService } from './refresh-tokens.service';
 import { addDays } from 'date-fns';
 import { RefreshTokenResponse } from './dto/refresh-token.response';
 import { v4 as uuid } from 'uuid';
+import { UserResponse } from './dto/user.response';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
 
   async registerUser(
     registerUserInput: RegisterUserInput,
-  ): Promise<RegisterUserResponse> {
+  ): Promise<UserResponse> {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(registerUserInput.password, salt);
     registerUserInput.password = hashedPassword;

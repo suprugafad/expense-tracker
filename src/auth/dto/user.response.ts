@@ -1,13 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class UpdateCategoryResponse {
+export class UserResponse {
   @Field()
   id: string;
 
   @Field()
   name: string;
 
-  @Field({ nullable: true })
-  description?: string;
+  @Field()
+  email: string;
 }

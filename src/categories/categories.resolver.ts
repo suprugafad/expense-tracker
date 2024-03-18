@@ -1,25 +1,23 @@
 import { CategoriesService } from './categories.service';
 import { Args, Resolver, Mutation, Context, ID, Query } from '@nestjs/graphql';
-import { CreateCategoryResponse } from './dto/create-category.response';
+import { CategoryResponse } from './dto/category.response';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { UpdateCategoryResponse } from './dto/update-category.response';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
-import { Category } from './entities/category.entity';
 import { DeleteCategoryResponse } from './dto/delete-category.response';
 
 @Resolver()
 export class CategoriesResolver {
   constructor(private categoriesService: CategoriesService) {}
 
-  @Mutation(() => CreateCategoryResponse)
+  @Mutation(() => CategoryResponse)
   @UseGuards(JwtAuthGuard)
   async createCategory(
     @Args('createCategoryInput') createCategoryInput: CreateCategoryInput,
     @Context() ctx: any,
-  ): Promise<CreateCategoryResponse> {
+  ): Promise<CategoryResponse> {
     const userId = ctx.req.user.id;
 
     return await this.categoriesService.createCategory({
@@ -28,13 +26,13 @@ export class CategoriesResolver {
     });
   }
 
-  @Mutation(() => UpdateCategoryResponse)
+  @Mutation(() => CategoryResponse)
   @UseGuards(JwtAuthGuard)
   async updateCategory(
     @Args('id', { type: () => ID }) id: string,
     @Args('updateCategoryInput') updateCategoryInput: UpdateCategoryInput,
     @Context() ctx: any,
-  ): Promise<UpdateCategoryResponse> {
+  ): Promise<CategoryResponse> {
     const userId = ctx.req.user.id;
 
     const updateCategoryRequestDto: UpdateCategoryRequestDto = {
@@ -48,9 +46,9 @@ export class CategoriesResolver {
     );
   }
 
-  @Query(() => [Category])
+  @Query(() => [CategoryResponse])
   @UseGuards(JwtAuthGuard)
-  async getUserCategories(@Context() ctx: any): Promise<Category[]> {
+  async getUserCategories(@Context() ctx: any): Promise<CategoryResponse[]> {
     const userId = ctx.req.user.id;
 
     return await this.categoriesService.getUserCategories(userId);
