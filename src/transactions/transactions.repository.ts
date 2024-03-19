@@ -28,6 +28,7 @@ export class TransactionsRepository extends Repository<Transaction> {
   ): Promise<Transaction[]> {
     let query = this.createQueryBuilder('transaction')
       .where('transaction.user.id = :userId', { userId })
+      .orderBy('transaction.date', 'DESC')
       .leftJoinAndSelect('transaction.category', 'category');
 
     if (filters) {
