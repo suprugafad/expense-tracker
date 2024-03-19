@@ -2,7 +2,7 @@ import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
-  @Length(0, 50)
+  @Length(2, 50)
   name: string;
 
   @IsOptional()
