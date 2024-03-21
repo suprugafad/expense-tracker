@@ -6,6 +6,7 @@ import { Transaction } from './entities/transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionTypeEnum } from './transaction-type.enum';
 import { GetExpensesByDayResponse } from './dto/get-expenses-by-day.response';
+import { SortOrderEnum } from './sort-order.enum';
 
 @Injectable()
 export class TransactionsRepository extends Repository<Transaction> {
@@ -28,8 +29,29 @@ export class TransactionsRepository extends Repository<Transaction> {
   ): Promise<Transaction[]> {
     let query = this.createQueryBuilder('transaction')
       .where('transaction.user.id = :userId', { userId })
-      .orderBy('transaction.date', 'DESC')
       .leftJoinAndSelect('transaction.category', 'category');
+
+    let orderDirection: 'ASC' | 'DESC' = 'DESC';
+    let orderBy = 'transaction.date';
+
+    if (filters.sortOrder) {
+      switch (filters.sortOrder) {
+        case SortOrderEnum.HIGHEST:
+          orderBy = 'transaction.amount';
+          orderDirection = 'DESC';
+          break;
+        case SortOrderEnum.LOWEST:
+          orderBy = 'transaction.amount';
+          orderDirection = 'ASC';
+          break;
+        case SortOrderEnum.OLDEST:
+          orderBy = 'transaction.date';
+          orderDirection = 'ASC';
+          break;
+      }
+    }
+
+    query = query.orderBy(orderBy, orderDirection);
 
     if (filters) {
       if (filters.startDate) {
@@ -44,9 +66,9 @@ export class TransactionsRepository extends Repository<Transaction> {
           endDate: endDate.toISOString(),
         });
       }
-      if (filters.categoryId) {
-        query = query.andWhere('transaction.category.id = :categoryId', {
-          categoryId: filters.categoryId,
+      if (filters.categoryIds && filters.categoryIds.length > 0) {
+        query = query.andWhere('transaction.category.id IN (:...categoryIds)', {
+          categoryIds: filters.categoryIds,
         });
       }
       if (filters.type) {
