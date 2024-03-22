@@ -80,6 +80,9 @@ export class TransactionsRepository extends Repository<Transaction> {
       if (filters.limit) {
         query = query.take(filters.limit);
       }
+      if (filters.skip !== undefined) {
+        query = query.skip(filters.skip);
+      }
     }
 
     return await query.getMany();

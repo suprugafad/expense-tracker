@@ -32,4 +32,9 @@ export class TransactionFilterInput {
   @IsOptional()
   @IsNumber()
   limit?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  skip?: number;
 }
