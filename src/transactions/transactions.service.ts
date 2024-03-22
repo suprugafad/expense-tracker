@@ -18,6 +18,7 @@ import {
   startOfDay,
   subDays,
 } from 'date-fns';
+import { GetAmountByCategoryResponse } from './dto/get-amount-by-category.response';
 
 @Injectable()
 export class TransactionsService {
@@ -117,6 +118,22 @@ export class TransactionsService {
     });
 
     return expensesByDay;
+  }
+
+  async getAmountsByCategory(
+    userId: string,
+    days: number,
+    type: TransactionTypeEnum,
+  ): Promise<GetAmountByCategoryResponse[]> {
+    const endDate = endOfDay(new Date());
+    const startDate = startOfDay(subDays(endDate, days - 1));
+
+    return await this.transactionsRepository.calculateAmountByCategory(
+      userId,
+      startDate,
+      endDate,
+      type,
+    );
   }
 
   async updateTransaction(

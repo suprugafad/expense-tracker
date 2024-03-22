@@ -14,9 +14,9 @@ export class UsersService {
   async createUser(
     registerUserInput: RegisterUserInput,
   ): Promise<RegisterUserResponse> {
-    const email = registerUserInput.email;
+    // const email = registerUserInput.email;
 
-    await this.getUserByEmail(email);
+    //await this.getUserByEmail(email);
 
     const user = await this.usersRepository.createUser(registerUserInput);
 
