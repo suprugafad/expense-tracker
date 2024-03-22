@@ -7,6 +7,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionTypeEnum } from './transaction-type.enum';
 import { GetExpensesByDayResponse } from './dto/get-expenses-by-day.response';
 import { SortOrderEnum } from './sort-order.enum';
+import { GetAmountByCategoryResponse } from './dto/get-amount-by-category.response';
 
 @Injectable()
 export class TransactionsRepository extends Repository<Transaction> {
@@ -123,6 +124,34 @@ export class TransactionsRepository extends Repository<Transaction> {
 
     return results.map((row) => ({
       day: row.day,
+      sum: parseFloat(row.sum),
+    }));
+  }
+
+  async calculateAmountByCategory(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    type: TransactionTypeEnum,
+  ): Promise<GetAmountByCategoryResponse[]> {
+    const results = await this.createQueryBuilder('transaction')
+      .select('category.name', 'category')
+      .addSelect('SUM(transaction.amount)', 'sum')
+      .innerJoin('transaction.category', 'category')
+      .where('transaction.user_id = :userId', { userId })
+      .andWhere('transaction.type = :type', {
+        type,
+      })
+      .andWhere('transaction.date BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
+      .groupBy('category.name')
+      .orderBy('sum', 'DESC')
+      .getRawMany();
+
+    return results.map((row) => ({
+      category: row.category,
       sum: parseFloat(row.sum),
     }));
   }
