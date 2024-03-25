@@ -59,7 +59,7 @@ export class Transaction {
   @Field(() => User)
   user: User;
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   @Field(() => Category)
   category: Category;
