@@ -30,6 +30,15 @@ export class TransactionsResolver {
     });
   }
 
+  @Query(() => TransactionResponse)
+  @UseGuards(JwtAuthGuard)
+  async getTransactionById(
+    @Context() ctx: any,
+    @Args('id') id: string,
+  ): Promise<TransactionResponse> {
+    return await this.transactionsService.getTransactionById(id);
+  }
+
   @Query(() => [TransactionResponse])
   @UseGuards(JwtAuthGuard)
   async getUserTransactions(

@@ -59,7 +59,7 @@ export class TransactionsService {
     const transaction = await this.transactionsRepository.findById(id);
 
     if (!transaction) {
-      throw new NotFoundException(`Custom category with id "${id}" not exist.`);
+      throw new NotFoundException(`Transaction with id "${id}" not exist.`);
     }
 
     return transaction;
