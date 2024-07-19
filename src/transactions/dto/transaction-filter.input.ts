@@ -1,6 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsOptional, IsUUID, IsDate, IsEnum, IsNumber } from 'class-validator';
+import { IsOptional, IsDate, IsEnum, IsNumber } from 'class-validator';
 import { TransactionTypeEnum } from '../transaction-type.enum';
+import { SortOrderEnum } from '../sort-order.enum';
 
 @InputType()
 export class TransactionFilterInput {
@@ -14,18 +15,26 @@ export class TransactionFilterInput {
   @IsDate()
   endDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => [String], { nullable: true })
   @IsOptional()
-  @IsUUID('4')
-  categoryId?: string;
+  categoryIds?: string[];
 
   @Field(() => TransactionTypeEnum, { nullable: true })
   @IsOptional()
   @IsEnum(TransactionTypeEnum)
   type?: TransactionTypeEnum;
 
+  @Field(() => SortOrderEnum, { defaultValue: SortOrderEnum.NEWEST })
+  @IsEnum(SortOrderEnum)
+  sortOrder: SortOrderEnum;
+
   @Field({ nullable: true })
   @IsOptional()
   @IsNumber()
   limit?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  skip?: number;
 }

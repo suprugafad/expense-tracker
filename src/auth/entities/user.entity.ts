@@ -42,5 +42,6 @@ export class User {
   updated_at: Date;
 
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
-  refreshTokens: RefreshToken[];
+  @Field(() => [RefreshToken], { nullable: true })
+  refreshTokens?: RefreshToken[];
 }

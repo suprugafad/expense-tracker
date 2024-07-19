@@ -9,6 +9,8 @@ import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { DeleteTransactionResponse } from './dto/delete-transaction.response';
 import { AccountSummaryResponse } from './dto/account-summary.response';
 import { GetExpensesByDayResponse } from './dto/get-expenses-by-day.response';
+import { GetAmountByCategoryResponse } from './dto/get-amount-by-category.response';
+import { TransactionTypeEnum } from './transaction-type.enum';
 
 @Resolver()
 export class TransactionsResolver {
@@ -26,6 +28,15 @@ export class TransactionsResolver {
     return await this.transactionsService.createTransaction(userId, {
       ...createTransactionInput,
     });
+  }
+
+  @Query(() => TransactionResponse)
+  @UseGuards(JwtAuthGuard)
+  async getTransactionById(
+    @Context() ctx: any,
+    @Args('id') id: string,
+  ): Promise<TransactionResponse> {
+    return await this.transactionsService.getTransactionById(id);
   }
 
   @Query(() => [TransactionResponse])
@@ -58,6 +69,22 @@ export class TransactionsResolver {
     const userId = ctx.req.user.id;
 
     return await this.transactionsService.getExpensesByDay(userId, days);
+  }
+
+  @Query(() => [GetAmountByCategoryResponse])
+  @UseGuards(JwtAuthGuard)
+  async getAmountsByCategory(
+    @Context() ctx: any,
+    @Args('days') days: number,
+    @Args('type') type: TransactionTypeEnum,
+  ): Promise<GetAmountByCategoryResponse[]> {
+    const userId = ctx.req.user.id;
+
+    return await this.transactionsService.getAmountsByCategory(
+      userId,
+      days,
+      type,
+    );
   }
 
   @Mutation(() => TransactionResponse)

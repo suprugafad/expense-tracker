@@ -5,7 +5,7 @@ import { IsOptional, IsString, Length } from 'class-validator';
 export class CreateCategoryInput {
   @Field()
   @IsString()
-  @Length(0, 50)
+  @Length(2, 50)
   name: string;
 
   @Field({ nullable: true })

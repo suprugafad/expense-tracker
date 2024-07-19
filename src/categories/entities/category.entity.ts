@@ -1,10 +1,12 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/auth/entities/user.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -27,4 +29,8 @@ export class Category {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Field(() => User, { nullable: true })
   user?: User | null;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  @Field(() => [Transaction], { nullable: true })
+  transactions?: Transaction[];
 }
