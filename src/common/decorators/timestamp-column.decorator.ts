@@ -7,22 +7,25 @@ export function TimestampColumn(options?: ColumnOptions) {
 }
 
 export function CreateTimestampColumn(options?: ColumnOptions) {
-  return TimestampColumn({ 
-    ...options, 
-    default: process.env.NODE_ENV === 'test' 
-      ? () => 'CURRENT_TIMESTAMP' 
-      : () => 'CURRENT_TIMESTAMP(6)',
+  return TimestampColumn({
+    ...options,
+    default:
+      process.env.NODE_ENV === 'test'
+        ? () => 'CURRENT_TIMESTAMP'
+        : () => 'CURRENT_TIMESTAMP(6)',
   });
 }
 
 export function UpdateTimestampColumn(options?: ColumnOptions) {
-  return TimestampColumn({ 
-    ...options, 
-    default: process.env.NODE_ENV === 'test' 
-      ? () => 'CURRENT_TIMESTAMP' 
-      : () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: process.env.NODE_ENV === 'test' 
-      ? 'CURRENT_TIMESTAMP' 
-      : 'CURRENT_TIMESTAMP(6)',
+  return TimestampColumn({
+    ...options,
+    default:
+      process.env.NODE_ENV === 'test'
+        ? () => 'CURRENT_TIMESTAMP'
+        : () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate:
+      process.env.NODE_ENV === 'test'
+        ? 'CURRENT_TIMESTAMP'
+        : 'CURRENT_TIMESTAMP(6)',
   });
 }

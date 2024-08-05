@@ -36,16 +36,13 @@ describe('CategoriesModule', () => {
         AuthModule,
         CategoriesModule,
       ],
-      providers: [
-        CategoriesService,
-        CategoriesResolver,
-        CategoriesRepository,
-      ],
+      providers: [CategoriesService, CategoriesResolver, CategoriesRepository],
     }).compile();
 
     categoriesService = module.get<CategoriesService>(CategoriesService);
     categoriesResolver = module.get<CategoriesResolver>(CategoriesResolver);
-    categoriesRepository = module.get<CategoriesRepository>(CategoriesRepository);
+    categoriesRepository =
+      module.get<CategoriesRepository>(CategoriesRepository);
   });
 
   afterEach(() => {
@@ -64,12 +61,14 @@ describe('CategoriesModule', () => {
   });
 
   it('should have CategoriesResolver as a provider', () => {
-    const categoriesResolver = module.get<CategoriesResolver>(CategoriesResolver);
+    const categoriesResolver =
+      module.get<CategoriesResolver>(CategoriesResolver);
     expect(categoriesResolver).toBeInstanceOf(CategoriesResolver);
   });
 
   it('should have CategoriesRepository as a provider', () => {
-    const categoriesRepository = module.get<CategoriesRepository>(CategoriesRepository);
+    const categoriesRepository =
+      module.get<CategoriesRepository>(CategoriesRepository);
     expect(categoriesRepository).toBeInstanceOf(CategoriesRepository);
   });
 

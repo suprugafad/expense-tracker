@@ -1,4 +1,7 @@
-import { UpdateTimestampColumn, CreateTimestampColumn } from 'src/common/decorators/timestamp-column.decorator';
+import {
+  UpdateTimestampColumn,
+  CreateTimestampColumn,
+} from 'src/common/decorators/timestamp-column.decorator';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   Column,
