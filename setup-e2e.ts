@@ -19,7 +19,7 @@ async function waitForDatabase() {
       await client.connect();
       await client.query('SELECT 1');
       console.log('Database is ready');
-      break;
+      return;
     } catch (err) {
       console.log('Database not ready, retrying...');
       retries -= 1;

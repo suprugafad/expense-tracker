@@ -17,5 +17,8 @@
   "testEnvironment": "node",
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/src/$1"
-  }
+  },
+  "coveragePathIgnorePatterns": [
+    "/__tests__/"
+  ]
 }
