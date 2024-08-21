@@ -6,12 +6,10 @@ export async function testUnauthorizedAccess(
   query: string,
   variables?: any,
 ) {
-  const response = await request(app.getHttpServer())
-    .post('/graphql')
-    .send({
-      query,
-      variables,
-    });
+  const response = await request(app.getHttpServer()).post('/graphql').send({
+    query,
+    variables,
+  });
 
   expect(response.body.errors).toBeDefined();
   expect(response.body.errors[0].message).toBe('Unauthorized');
