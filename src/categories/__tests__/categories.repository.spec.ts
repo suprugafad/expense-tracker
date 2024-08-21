@@ -276,12 +276,15 @@ describe('CategoriesRepository', () => {
       );
 
       expect(findOneSpy).toHaveBeenCalledWith({
-        where: { name: categoryName, user: { id: user.id } },
+        where: [
+          { name: categoryName, user: { id: user.id } },
+          { name: categoryName, user: null },
+        ],
       });
       expect(category).toEqual(expectedCategory);
     });
 
-    it('should find and return a category by name and null userId', async () => {
+    it('should find and return a general category by name', async () => {
       const expectedCategory = createExpectedCategory(
         createCategoryDto(null),
         null,
@@ -294,12 +297,15 @@ describe('CategoriesRepository', () => {
       const category = await repository.findByNameAndUserId(categoryName, null);
 
       expect(findOneSpy).toHaveBeenCalledWith({
-        where: { name: categoryName, user: { id: null } },
+        where: [
+          { name: categoryName, user: { id: null } },
+          { name: categoryName, user: null },
+        ],
       });
       expect(category).toEqual(expectedCategory);
     });
 
-    it('should return undefined if category not found by name and null userId', async () => {
+    it('should return undefined if general category not found by name', async () => {
       const findOneSpy = jest
         .spyOn(repository, 'findOne')
         .mockResolvedValue(undefined);
@@ -307,7 +313,10 @@ describe('CategoriesRepository', () => {
       const category = await repository.findByNameAndUserId(categoryName, null);
 
       expect(findOneSpy).toHaveBeenCalledWith({
-        where: { name: categoryName, user: { id: null } },
+        where: [
+          { name: categoryName, user: { id: null } },
+          { name: categoryName, user: null },
+        ],
       });
       expect(category).toBeUndefined();
     });
@@ -323,7 +332,10 @@ describe('CategoriesRepository', () => {
       );
 
       expect(findOneSpy).toHaveBeenCalledWith({
-        where: { name: categoryName, user: { id: user.id } },
+        where: [
+          { name: categoryName, user: { id: user.id } },
+          { name: categoryName, user: null },
+        ],
       });
       expect(category).toBeUndefined();
     });
@@ -337,7 +349,10 @@ describe('CategoriesRepository', () => {
         repository.findByNameAndUserId(categoryName, user.id),
       ).rejects.toThrow('Database error');
       expect(findOneSpy).toHaveBeenCalledWith({
-        where: { name: categoryName, user: { id: user.id } },
+        where: [
+          { name: categoryName, user: { id: user.id } },
+          { name: categoryName, user: null },
+        ],
       });
     });
   });
