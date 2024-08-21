@@ -48,7 +48,10 @@ export class CategoriesRepository extends Repository<Category> {
     userId: string,
   ): Promise<Category | undefined> {
     return await this.findOne({
-      where: { name, user: { id: userId || null } },
+      where: [
+        { name, user: { id: userId } },
+        { name, user: null },
+      ],
     });
   }
 

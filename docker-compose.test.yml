@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  postgres-test:
+    image: postgres:16.2
+    container_name: postgres_test
+    env_file:
+      - .env.test
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+    networks:
+      - test_network
+
+volumes:
+  pgdata_test:
+
+networks:
+  test_network:
+    driver: bridge
