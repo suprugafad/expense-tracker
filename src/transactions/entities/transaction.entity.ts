@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { TransactionTypeEnum } from '../transaction-type.enum';
+import { CreateTimestampColumn, UpdateTimestampColumn } from 'src/common/decorators/timestamp-column.decorator';
 
 @Entity('transactions')
 @ObjectType('Transaction')
@@ -24,8 +25,8 @@ export class Transaction {
   amount: number;
 
   @Column({
-    type: 'enum',
-    enum: TransactionTypeEnum,
+    type: process.env.NODE_ENV === 'test' ? 'text' : 'enum',
+    enum: process.env.NODE_ENV === 'test' ? undefined : TransactionTypeEnum,
   })
   @Field(() => TransactionTypeEnum)
   type: TransactionTypeEnum;
@@ -34,24 +35,27 @@ export class Transaction {
   @Field({ nullable: true })
   description?: string;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
+  // @Column({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  // })
+  @CreateTimestampColumn()
   @Field()
   date: Date;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
+  // @CreateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  // })
+  @CreateTimestampColumn()
   created_at: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
+  // @UpdateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  //   onUpdate: 'CURRENT_TIMESTAMP(6)',
+  // })
+  @UpdateTimestampColumn()
   updated_at: Date;
 
   @ManyToOne(() => User)

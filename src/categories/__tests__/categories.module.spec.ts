@@ -8,6 +8,7 @@ import { CategoriesRepository } from '../categories.repository';
 import { User } from 'src/auth/entities/user.entity';
 import { RefreshToken } from 'src/auth/entities/refresh-token.entity';
 import { CategoriesModule } from '../categories.module';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 describe('Environment variables', () => {
   it('should load JWT_REFRESH_SECRET from .env.test', () => {
@@ -25,13 +26,13 @@ describe('CategoriesModule', () => {
     const dataSourceOptions: TypeOrmModuleOptions = {
       type: 'sqlite',
       database: ':memory:',
-      entities: [Category, User, RefreshToken],
+      entities: [Category, User, RefreshToken, Transaction],
       synchronize: true,
     };
 
     module = await Test.createTestingModule({
       imports: [
-        TypeOrmModule.forFeature([Category, User, RefreshToken]),
+        TypeOrmModule.forFeature([Category, User, RefreshToken, Transaction]),
         TypeOrmModule.forRoot(dataSourceOptions),
         AuthModule,
         CategoriesModule,
