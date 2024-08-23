@@ -4,8 +4,6 @@ import { Client } from 'pg';
 
 dotenv.config({ path: '.env.test' });
 
-let stopRetries = false;
-
 async function waitForDatabase() {
   const client = new Client({
     host: process.env.POSTGRES_HOST,
@@ -16,43 +14,43 @@ async function waitForDatabase() {
   });
 
   let retries = 5;
-  while (retries && !stopRetries) {
+  while (retries) {
     try {
       await client.connect();
       await client.query('SELECT 1');
       console.log('Database is ready');
       return;
     } catch (err) {
-      if (retries > 0) {
-        console.log(`Database not ready, retrying in 5 seconds... (${5 - retries + 1}/5)`);
-        retries -= 1;
-        await new Promise(res => setTimeout(res, 5000));
-      } else {
-        console.error('Unable to connect to the database after 10 attempts');
-        throw new Error('Unable to connect to the database');
-      }
+      console.log(`Database not ready, retrying in 5 seconds... (${5 - retries + 1}/5)`);
+      retries -= 1;
+      await new Promise(res => setTimeout(res, 5000));
     } finally {
       await client.end();
     }
   }
 
-  if (!retries) {
-    throw new Error('Unable to connect to the database');
-  }
+  throw new Error('Unable to connect to the database');
 }
+
+global.beforeAll(() => {
+  console.log('Starting containers...');
+  try {
+    execSync('docker-compose -f docker-compose.test.yml up -d', { stdio: 'inherit' });
+  } catch (err) {
+    console.error('Error starting docker-compose:', err.message);
+    throw err;
+  }
+});
 
 global.afterAll(() => {
   console.log('Tearing down containers...');
-  stopRetries = true;
-  execSync('docker-compose -f docker-compose.test.yml down');
+  try {
+    execSync('docker-compose -f docker-compose.test.yml down', { stdio: 'inherit' });
+  } catch (err) {
+    console.error('Error stopping docker-compose:', err.message);
+  }
 });
 
-export default async () => {  
-  execSync('docker-compose -f docker-compose.test.yml up -d');
-  
+export default async () => {
   await waitForDatabase();
 };
-
-(async () => {
-  await (await import('./setup-e2e')).default();
-})();
