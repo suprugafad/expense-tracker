@@ -14,6 +14,7 @@
   ],
   "coverageDirectory": "./coverage/e2e",
   "setupFilesAfterEnv": ["<rootDir>/setup-e2e.ts"],
+  "testSequencer": "./test/test-sequencer.js",
   "testEnvironment": "node",
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/src/$1"

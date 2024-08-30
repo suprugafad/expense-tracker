@@ -47,3 +47,37 @@ mutation DeleteCategory($id: ID!) {
   }
 }
 `;
+
+export const GET_USER_TRANSACTIONS = `
+query GetUserTransactions(
+  $startDate: DateTime
+  $endDate: DateTime
+  $categoryIds: [String!]
+  $type: TransactionTypeEnum
+  $sortOrder: SortOrderEnum
+  $limit: Float
+  $skip: Float
+) {
+  getUserTransactions(
+    filters: {
+      startDate: $startDate
+      endDate: $endDate
+      categoryIds: $categoryIds
+      type: $type
+      sortOrder: $sortOrder
+      limit: $limit
+      skip: $skip
+    }
+  ) {
+    id
+    amount
+    description
+    type
+    date
+    category {
+      id
+      name
+    }
+  }
+}
+`;

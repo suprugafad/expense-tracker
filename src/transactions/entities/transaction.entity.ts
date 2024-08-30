@@ -11,7 +11,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { TransactionTypeEnum } from '../transaction-type.enum';
-import { CreateTimestampColumn, UpdateTimestampColumn } from 'src/common/decorators/timestamp-column.decorator';
+import {
+  CreateTimestampColumn,
+  UpdateTimestampColumn,
+} from 'src/common/decorators/timestamp-column.decorator';
 
 @Entity('transactions')
 @ObjectType('Transaction')
